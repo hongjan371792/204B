@@ -3,310 +3,456 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/png" href="Dino.png">
-<title>204B by hongjan</title>
+<title>2048 by hongjan</title>
+<link rel="icon" type="image/png" href="logo.png">
 <style>
-/* 调整文字样式 */
-#muteLabel {
-  margin-right: 10px;
-  color: white;
-  font-size: 16px;
+        /* 将复选框放置在右上角 */
+        #muteContainer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        }
+
+        #muteCheckbox {
+            margin-right: 5px;
+        }
+
+        /* 调整文字样式 */
+        #muteLabel {
+            margin-right: 10px;
+            color: white;
+            font-size: 16px;
+        }
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column; /* 讓標題和按鈕垂直排列 */
+        height: 100vh;
+        background-color: #2a8fd3;
+        position: relative; /* 設定父容器 */
+    }
+    h1 {
+    color: #000000;
+    text-align: center;
+    font-weight: bold;
+    margin: 5px 0;
+    line-height: 1.5;
+    margin: 10px 0;
+    position: absolute; /* 添加绝对定位 */
+    top: 40%; /* 将顶部位置设置为父容器的一半 */
+    transform: translateY(-50%); /* 使用 translateY(-50%) 来垂直居中 */
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column; /* 讓標題和按鈕垂直排列 */
-  height: 100vh;
-  background-color: #2a8fd3;
-  position: relative; /* 設定父容器 */
+h6 {
+    color: #000000;
+    text-align: center;
+    font-weight: bold;
+    margin: 5px 0;
+    line-height: 1.5;
+    margin: 10px 0;
+    position: absolute; /* 添加绝对定位 */
+    top: 45%; /* 将顶部位置设置为父容器的一半 */
+    transform: translateY(-50%); /* 使用 translateY(-50%) 来垂直居中 */
+}
+    p {
+    color: #000000;
+    text-align: center;
+    font-weight: bold;
+    margin: 5px 0;
+    line-height: 1.5;
+    margin: 10px 0;
+    position: absolute; /* 添加绝对定位 */
+    top: 50%; /* 将顶部位置设置为父容器的一半 */
+    transform: translateY(-50%); /* 使用 translateY(-50%) 来垂直居中 */
+}
+#container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 在主軸上置中 */
+    align-items: center; /* 在交叉軸上置中 */
+    width: 100%;
+    height: 100vh;
 }
 
-canvas {
-  border: 5px solid #000000;
-  position: relative; /* 設定 canvas 為相對定位 */
-  width: 100%;
-  max-width: 600px; /* 設定最大寬度為 600px，以防止內容在大螢幕上過寬 */
+.button,
+.buttonstart {
+    background-color: #ff7300;
+    border: none;
+    color: #ffffff;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    margin: 10px 0; /* 調整按鈕的上下邊距 */
 }
 
-.button {
-  background-color: #ff7300; /* 橘色 */
-  border: none;
-  color: rgb(233, 233, 233);
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  border-radius: 8px;
-}
 
-.button:hover {
-  background-color: #a14e00; /* 深橘色 */
-}
+    #grid {
+        display: grid;
+        grid-template-columns: repeat(4, 80px);
+        grid-template-rows: repeat(4, 80px);
+        gap: 4px;
+        border: 2px solid #000000;
+        visibility: hidden; /* 隐藏游戏界面 */
+    }
 
-.text-background {
-  width: 100%;
-  height: 50px; /* 調整高度以適應文字 */
-  background-color: #2a8fd3; /* 背景色與 body 相同 */
-  position: absolute; /* 絕對定位 */
-  bottom: 0; /* 與底部對齊 */
-}
+    .cell {
+        width: 80px;
+        height: 80px;
+        border: 2px solid #000000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
 
-/* 手機和平板設備樣式 */
-@media only screen and (max-width: 768px) {
-  body {
-    transform: scale(0.8); /* 縮小整個畫面 */
-    transform-origin: top center; /* 設定縮放原點為畫面頂部中心 */
-  }
-}
+    .cell img {
+        width: 80%; /* 缩小图像 */
+        height: 80%; /* 缩小图像 */
+    }
 
-.container {
-  display: none; /* 隱藏遊戲版面 */
-  flex-wrap: wrap;
-  width: 320px;
-  margin: 20px auto;
-  border: 2px solid #000000;
-  padding: 5px;
-}
+    .button:hover, .buttonstart:hover {
+        background-color: #a14e00; /* 深橘色 */
+    }
 
-.cell {
-  width: 70px;
-  height: 70px;
-  margin: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 24px;
-  font-weight: bold;
-  position: relative; /* 相對定位 */
-  background-image: url('logo.png'); /* 使用相同的logo.png作為背景圖片 */
-  background-size: cover; /* 使圖片填滿整個格子 */
-  color: #333; /* 設定文字顏色 */
-}
+    .fail {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 24px;
+        background-color: rgba(255, 0, 0, 0.5);
+        padding: 10px;
+        border-radius: 5px;
+        display: none;
+    }
 
-#startInterface {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: white; /* 設定文字顏色 */
-}
-
-.failure {
-  color: red; /* 設定失敗文字顏色 */
-  font-weight: bold; /* 加粗文字 */
-}
-
+    /* 手機和平板設備樣式 */
+    @media only screen and (max-width: 768px) {
+        body {
+            transform: scale(0.8); /* 縮小整個畫面 */
+            transform-origin: top center; /* 設定縮放原點為畫面頂部中心 */
+        }
+    }
 </style>
 </head>
 <body>
-<div class="container" id="container"></div>
-
-<!-- 開始介面 -->
-<div id="startInterface">
-  <h1>204B</h1>
-  <p>使用方向鍵控制</p>
-  <p>作者：hongjan</p>
-  <p id="failureMessage" class="failure" style="display: none;">失敗！無法再移動。</p>
-  <button id="startButton" class="button">開始遊戲</button>
-  <a href="https://github.com/hongjan371792/Dino" class="button" target="_blank">GitHub</a>
-  <a id="githubLink" class="button" target="_blank">Gihub API載入中</a> <!-- GitHub 按钮 -->
+<h1>204B</h1>
+<h6>使用方向鍵合成老師</h6>
+<p>作者：hongjan</p>
+<div id="container">
+    <div id="grid"></div>
+    <div id="fail" class="fail">遊戲結束!<br><button id="restartButton" class="button">重新開始</button></div>
+    <button id="startButton" class="button">開始遊戲</button>
+    <a href="https://github.com/hongjan371792/204B" class="button" target="_blank">GitHub</a>
+    <a id="githubLink" class="button" target="_blank">Gihub API載入錯誤</a> <!-- GitHub 按钮 -->
 </div>
-
-<canvas id="gameCanvas" width="600" height="600" style="display: none;"></canvas>
-<button id="restartButton" class="button" style="display: none;">重新開始</button>
-<div class="text-background"></div>
+<audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+<div id="muteContainer">
+    <input type="checkbox" id="muteCheckbox">
+    <label for="muteCheckbox">靜音</label>
+</div>
 <script>
-// JavaScript 代码部分
-const container = document.getElementById('container');
-let board = [];
+            const muteCheckbox = document.getElementById('muteCheckbox');
 
-function initializeBoard() {
-  for (let i = 0; i < 4; i++) {
-    board[i] = [];
-    for (let j = 0; j < 4; j++) {
-      board[i][j] = 0;
-    }
-  }
-  addRandomTile();
-  addRandomTile();
-  renderBoard();
-}
-
-function addRandomTile() {
-  let emptyCells = [];
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
-      if (board[i][j] === 0) {
-        emptyCells.push({ x: i, y: j });
-      }
-    }
-  }
-  if (emptyCells.length > 0) {
-    const { x, y } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-    board[x][y] = Math.random() < 0.9 ? 2 : 4;
-  }
-}
-
-function renderBoard() {
-  container.innerHTML = '';
-  for (let i = 0; i < 4; i++) {
-    for (let j = 0; j < 4; j++) {
-      if (board[i][j] !== 0) { // 如果不是零，則顯示數字
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.innerText = board[i][j];
-        container.appendChild(cell);
-      } else { // 如果是零，則不顯示
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.style.visibility = 'hidden'; // 將零的格子隱藏
-        container.appendChild(cell);
-      }
-    }
-  }
-}
-
-// 開始遊戲按鈕點擊事件
-document.getElementById('startButton').addEventListener('click', function() {
-  document.getElementById('startInterface').style.display = 'none'; // 隱藏開始介面
-  document.getElementById('container').style.display = 'flex'; // 顯示遊戲版面
-  document.getElementById('failureMessage').style.display = 'none'; // 隱藏失敗訊息
-  initializeBoard(); // 初始化遊戲版面
-});
-
-// 方向鍵控制
-document.addEventListener('keydown', function(event) {
-  if ([37, 38, 39, 40].includes(event.keyCode)) {
-    event.preventDefault();
-    console.log('Arrow key pressed:', event.keyCode);
-    // 在此處添加你的方向鍵控制邏輯
-    switch(event.keyCode) {
-      case 37: // 左箭頭
-        moveLeft();
-        break;
-      case 38: // 上箭頭
-        moveUp();
-        break;
-      case 39: // 右箭頭
-        moveRight();
-        break;
-      case 40: // 下箭頭
-        moveDown();
-        break;
-    }
-  }
-});
-
-function moveRight() {
-  // 在此添加向右移動邏輯
-  for (let i = 0; i < 4; i++) {
-    for (let j = 2; j >= 0; j--) {
-      if (board[i][j] !== 0) {
-        let k = j + 1;
-        while (k < 4) {
-          if (board[i][k] === 0) {
-            board[i][k] = board[i][k - 1];
-            board[i][k - 1] = 0;
-            k++;
-          } else if (board[i][k] === board[i][k - 1]) {
-            board[i][k] *= 2;
-            board[i][k - 1] = 0;
-            break;
-          } else {
-            break;
-          }
+            muteCheckbox.addEventListener('change', function() {
+            if (muteCheckbox.checked) {
+                bgMusic.pause();
+            } else {
+                bgMusic.play();
+            }
+        });
+            // 获取 GitHub 项目的最新版本信息
+            function getLatestVersion() {
+            // 发起 HTTP 请求获取 GitHub 项目的信息
+            fetch('https://api.github.com/repos/hongjan371792/204B/releases/latest')
+                .then(response => response.json())
+                .then(data => {
+                    // 提取最新版本号
+                    const latestVersion = data.tag_name;
+                    // 构建 GitHub 按钮链接
+                    const githubButton = document.getElementById('githubLink');
+                    githubButton.href = `https://github.com/hongjan371792/Dino/releases/tag/${latestVersion}`;
+                    githubButton.innerText = `更新說明 版本：${latestVersion}`; // 更新按钮文本显示最新版本号
+                })
+                .catch(error => console.error('Error:', error));
         }
-      }
+
+        // 页面加载时调用函数以获取最新版本信息并更新 GitHub 按钮链接
+        window.onload = function() {
+            getLatestVersion();
+        };
+        // 檢測設備類型
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        // 如果是手機或平板，應用手機樣式
+        if (isMobile) {
+            document.body.classList.add('mobile');
+        }
+// JavaScript 代码
+let grid = [];
+const gridSize = 4;
+let gameOver = false;
+const bgMusic = document.getElementById('bgMusic');
+
+function createGrid() {
+    // 创建空的游戏网格
+    for (let i = 0; i < gridSize; i++) {
+        grid.push(new Array(gridSize).fill(0));
     }
-  }
-  addRandomTile();
-  renderBoard();
 }
 
+function addNewTile() {
+    // 添加新方块
+    const emptyCells = [];
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+            if (grid[i][j] === 0) {
+                emptyCells.push({ row: i, col: j });
+            }
+        }
+    }
+    if (emptyCells.length > 0) {
+        const { row, col } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        grid[row][col] = Math.random() < 0.9 ? 2 : 4;
+    }
+}
+
+function drawGrid() {
+    // 绘制游戏网格
+    const gridContainer = document.getElementById('grid');
+    gridContainer.innerHTML = '';
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            gridContainer.appendChild(cell);
+            if (grid[i][j] > 0) {
+                const img = document.createElement('img');
+                img.src = `images/${grid[i][j]}.png`;
+                img.alt = grid[i][j];
+                cell.appendChild(img);
+            }
+        }
+    }
+}
+
+
+function checkGameOver() {
+    // 检查游戏是否结束
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+            if (grid[i][j] === 0) {
+                return false; // 存在空单元格，游戏未结束
+            }
+            // 检查相邻单元格是否可以合并
+            if (j < gridSize - 1 && grid[i][j] === grid[i][j + 1]) {
+                return false;
+            }
+            if (i < gridSize - 1 && grid[i][j] === grid[i + 1][j]) {
+                return false;
+            }
+        }
+    }
+    return true; // 所有单元格都被填满且没有可以合并的相邻单元格，游戏结束
+}
 function moveLeft() {
-  // 在此添加向左移動邏輯
-  for (let i = 0; i < 4; i++) {
-    for (let j = 1; j < 4; j++) {
-      if (board[i][j] !== 0) {
-        let k = j - 1;
-        while (k >= 0) {
-          if (board[i][k] === 0) {
-            board[i][k] = board[i][k + 1];
-            board[i][k + 1] = 0;
-            k--;
-          } else if (board[i][k] === board[i][k + 1]) {
-            board[i][k] *= 2;
-            board[i][k + 1] = 0;
-            break;
-          } else {
-            break;
-          }
+    let moved = false;
+    let merged = false;
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 1; j < gridSize; j++) {
+            if (grid[i][j] !== 0) {
+                let k = j - 1;
+                while (k >= 0 && (grid[i][k] === 0 || grid[i][k] === grid[i][j])) {
+                    if (grid[i][k] === grid[i][j]) {
+                        grid[i][k] *= 2;
+                        grid[i][j] = 0;
+                        moved = true;
+                        merged = true;
+                        break;
+                    }
+                    k--;
+                }
+                if (k !== j - 1) {
+                    if (grid[i][k + 1] !== grid[i][j]) {
+                        grid[i][k + 1] = grid[i][j];
+                        grid[i][j] = 0;
+                        moved = true;
+                    }
+                }
+            }
         }
-      }
     }
-  }
-  addRandomTile();
-  renderBoard();
+
+    return moved;
 }
 
 function moveUp() {
-  // 在此添加向上移動邏輯
-  for (let j = 0; j < 4; j++) {
-    for (let i = 1; i < 4; i++) {
-      if (board[i][j] !== 0) {
-        let k = i - 1;
-        while (k >= 0) {
-          if (board[k][j] === 0) {
-            board[k][j] = board[k + 1][j];
-            board[k + 1][j] = 0;
-            k--;
-          } else if (board[k][j] === board[k + 1][j]) {
-            board[k][j] *= 2;
-            board[k + 1][j] = 0;
-            break;
-          } else {
-            break;
-          }
+    let moved = false;
+    let merged = false;
+    for (let j = 0; j < gridSize; j++) {
+        for (let i = 1; i < gridSize; i++) {
+            if (grid[i][j] !== 0) {
+                let k = i - 1;
+                while (k >= 0 && (grid[k][j] === 0 || grid[k][j] === grid[i][j])) {
+                    if (grid[k][j] === grid[i][j]) {
+                        grid[k][j] *= 2;
+                        grid[i][j] = 0;
+                        moved = true;
+                        merged = true;
+                        break;
+                    }
+                    k--;
+                }
+                if (k !== i - 1) {
+                    if (grid[k + 1][j] !== grid[i][j]) {
+                        grid[k + 1][j] = grid[i][j];
+                        grid[i][j] = 0;
+                        moved = true;
+                    }
+                }
+            }
         }
-      }
     }
-  }
-  addRandomTile();
-  renderBoard();
+
+    return moved;
+}
+
+function moveRight() {
+    let moved = false;
+    let merged = false;
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = gridSize - 2; j >= 0; j--) {
+            if (grid[i][j] !== 0) {
+                let k = j + 1;
+                while (k < gridSize && (grid[i][k] === 0 || grid[i][k] === grid[i][j])) {
+                    if (grid[i][k] === grid[i][j]) {
+                        grid[i][k] *= 2;
+                        grid[i][j] = 0;
+                        moved = true;
+                        merged = true;
+                        break;
+                    }
+                    k++;
+                }
+                if (k !== j + 1) {
+                    if (grid[i][k - 1] !== grid[i][j]) {
+                        grid[i][k - 1] = grid[i][j];
+                        grid[i][j] = 0;
+                        moved = true;
+                    }
+                }
+            }
+        }
+    }
+
+    return moved;
 }
 
 function moveDown() {
-  // 在此添加向下移動邏輯
-  for (let j = 0; j < 4; j++) {
-    for (let i = 2; i >= 0; i--) {
-      if (board[i][j] !== 0) {
-        let k = i + 1;
-        while (k < 4) {
-          if (board[k][j] === 0) {
-            board[k][j] = board[k - 1][j];
-            board[k - 1][j] = 0;
-            k++;
-          } else if (board[k][j] === board[k - 1][j]) {
-            board[k][j] *= 2;
-            board[k - 1][j] = 0;
-            break;
-          } else {
-            break;
-          }
+    let moved = false;
+    let merged = false;
+    for (let j = 0; j < gridSize; j++) {
+        for (let i = gridSize - 2; i >= 0; i--) {
+            if (grid[i][j] !== 0) {
+                let k = i + 1;
+                while (k < gridSize && (grid[k][j] === 0 || grid[k][j] === grid[i][j])) {
+                    if (grid[k][j] === grid[i][j]) {
+                        grid[k][j] *= 2;
+                        grid[i][j] = 0;
+                        moved = true;
+                        merged = true;
+                        break;
+                    }
+                    k++;
+                }
+                if (k !== i + 1) {
+                    if (grid[k - 1][j] !== grid[i][j]) {
+                        grid[k - 1][j] = grid[i][j];
+                        grid[i][j] = 0;
+                        moved = true;
+                    }
+                }
+            }
         }
-      }
     }
-  }
-  addRandomTile();
-  renderBoard();
-}
 
+    return moved;
+}
+    function startGame() {
+    grid = [];
+    gameOver = false;
+    createGrid();
+    addNewTile();
+    addNewTile();
+    drawGrid();
+    document.getElementById('grid').style.visibility = 'visible'; // 显示游戏界面
+    document.getElementById('fail').style.display = 'none'; // 隐藏游戏结束信息
+    document.getElementById('startButton').style.display = 'none'; // 隐藏开始按钮
+    document.querySelector('h1').style.display = 'none'; // 隐藏标题
+    document.querySelectorAll('p').forEach(function(para) {
+        para.style.display = 'none'; // 隐藏所有段落
+    });
+    bgMusic.play(); // 播放背景音乐
+    
+    const githubButtons = document.querySelectorAll('.button');
+    githubButtons.forEach(function(button) {
+        button.classList.remove('button')
+        button.classList.add('buttonstart');
+    });
+    document.getElementById('restartButton').addEventListener('click', function() {
+    startGame(); // Restart game when restart button is clicked
+    document.getElementById('fail').style.display = 'none'; // Hide game over message
+    bgMusic.play(); // Play background music
+});    
+    const h6Element = document.querySelector('h6');
+    h6Element.style.position = 'relative'; // 将定位属性改为相对定位
+    h6Element.style.top = '-50px'; // 根据需要调整顶部偏移量
+
+    }
+    document.getElementById('startButton').addEventListener('click', startGame);
+
+    document.getElementById('restartButton').addEventListener('click', function() {
+        startGame(); // Restart game when restart button is clicked
+        document.getElementById('fail').style.display = 'none'; // Hide game over message
+        bgMusic.play(); // Play background music
+    });
+    document.addEventListener('keydown', function(event) {
+    event.preventDefault(); // 防止浏览器默认的键盘行为
+    if (!gameOver) {
+        let moved = false;
+        if (event.key === 'ArrowLeft') {
+            moved = moveLeft();
+        } else if (event.key === 'ArrowRight') {
+            moved = moveRight();
+        } else if (event.key === 'ArrowUp') {
+            moved = moveUp();
+        } else if (event.key === 'ArrowDown') {
+            moved = moveDown();
+        }
+        if (moved) {
+            addNewTile();
+            drawGrid();
+            if (checkGameOver()) {
+                gameOver = true;
+                document.getElementById('fail').style.display = 'block';
+            }
+        }
+    }
+});
 </script>
 </body>
 </html>
